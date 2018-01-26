@@ -1,0 +1,5 @@
+---
+- name: create openshift hosts file
+  template:
+    src: hosts.j2
+    dest: "{{ coh_destination_file }}"
