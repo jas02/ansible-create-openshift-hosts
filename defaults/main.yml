@@ -15,5 +15,5 @@ coh_deployment_type: "origin"
 coh_openshift_master_htpasswd_file: htpasswd.openshift
 coh_openshift_master_default_subdomain: apps
 
-coh_loadbalancer_hostname: {{ groups.lb.0 }}
+coh_loadbalancer_hostname: "{{ groups.lb.0 }}"
 coh_domain_name: "openshift.int.tieto.com"
