@@ -1,5 +1,5 @@
 ---
-coh_destination_file: /tmp/hosts
+coh_destination_file: hosts-openshift-cluster
 
 # Ansible related variables
 coh_ansible_ssh_private_key_file: openstack-rancher.pem 
