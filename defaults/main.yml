@@ -9,7 +9,7 @@ coh_ansible_ssh_user: "root"
 # Openshift basic vars
 # deployment type origin/openshift-enterprise
 coh_deployment_type: "origin"
-coh_openshift_master_htpasswd_file: htpasswd.openshift
+coh_openshift_master_htpasswd_file: /root/htpasswd.openshift
 coh_openshift_master_default_subdomain: apps
 
 coh_loadbalancer_hostname: "{{ groups.lb.0 }}"
