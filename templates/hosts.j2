@@ -12,7 +12,7 @@ ansible_ssh_user={{ coh_ansible_ssh_user }}
 ###########################################################################
 deployment_type={{ coh_deployment_type }}
 containerized=false
-openshift_disable_check="disk_availability,memory_availability"
+#openshift_disable_check="disk_availability,memory_availability"
 
 # default project node selector
 osm_default_node_selector='env=app'
@@ -82,14 +82,7 @@ openshift_master_htpasswd_file={{ coh_openshift_master_htpasswd_file }}
 # Enable cluster metrics
 
 openshift_metrics_install_metrics=True
-
-openshift_metrics_storage_kind=nfs
-openshift_metrics_storage_access_modes=['ReadWriteOnce']
-openshift_metrics_storage_nfs_directory=/srv/nfs
-openshift_metrics_storage_nfs_options='*(rw,root_squash)'
-openshift_metrics_storage_volume_name=metrics
-openshift_metrics_storage_volume_size=10Gi
-openshift_metrics_storage_labels={'storage': 'metrics'}
+openshift_metrics_cassandra_storage_type=dynamic
 
 #openshift_master_metrics_public_url=https://hawkular-metrics.apps.f967.example.opentlc.com/hawkular/metrics
 
@@ -98,31 +91,29 @@ openshift_hosted_prometheus_deploy=true
 openshift_prometheus_node_selector={"env":"infra"}
 openshift_prometheus_namespace=openshift-metrics
 
+
+openshift_prometheus_storage_volume_size=100Gi
+openshift_prometheus_alertmanager_storage_volume_size=100Gi
+openshift_prometheus_alertbuffer_storage_volume_size=100Gi
+openshift_prometheus_storage_class=glusterfs
+openshift_prometheus_alertmanager_storage_class=glusterfs
+openshift_prometheus_alertbuffer_storage_class=glusterfs
+
 # Prometheus
-openshift_prometheus_storage_kind=nfs
-openshift_prometheus_storage_access_modes=['ReadWriteOnce']
-openshift_prometheus_storage_nfs_directory=/srv/nfs
-openshift_prometheus_storage_nfs_options='*(rw,root_squash)'
-openshift_prometheus_storage_volume_name=prometheus
-openshift_prometheus_storage_volume_size=10Gi
+openshift_prometheus_storage_kind=glusterfs
+openshift_prometheus_storage_volume_size=100Gi
 openshift_prometheus_storage_labels={'storage': 'prometheus'}
 openshift_prometheus_storage_type='pvc'
 # For prometheus-alertmanager
-openshift_prometheus_alertmanager_storage_kind=nfs
-openshift_prometheus_alertmanager_storage_access_modes=['ReadWriteOnce']
-openshift_prometheus_alertmanager_storage_nfs_directory=/srv/nfs
-openshift_prometheus_alertmanager_storage_nfs_options='*(rw,root_squash)'
+openshift_prometheus_alertmanager_storage_kind=glusterfs
 openshift_prometheus_alertmanager_storage_volume_name=prometheus-alertmanager
-openshift_prometheus_alertmanager_storage_volume_size=10Gi
+openshift_prometheus_alertmanager_storage_volume_size=100Gi
 openshift_prometheus_alertmanager_storage_labels={'storage': 'prometheus-alertmanager'}
 openshift_prometheus_alertmanager_storage_type='pvc'
 # For prometheus-alertbuffer
-openshift_prometheus_alertbuffer_storage_kind=nfs
-openshift_prometheus_alertbuffer_storage_access_modes=['ReadWriteOnce']
-openshift_prometheus_alertbuffer_storage_nfs_directory=/srv/nfs
-openshift_prometheus_alertbuffer_storage_nfs_options='*(rw,root_squash)'
+openshift_prometheus_alertbuffer_storage_kind=glusterfs
 openshift_prometheus_alertbuffer_storage_volume_name=prometheus-alertbuffer
-openshift_prometheus_alertbuffer_storage_volume_size=10Gi
+openshift_prometheus_alertbuffer_storage_volume_size=100Gi
 openshift_prometheus_alertbuffer_storage_labels={'storage': 'prometheus-alertbuffer'}
 openshift_prometheus_alertbuffer_storage_type='pvc'
 
@@ -133,17 +124,9 @@ openshift_metrics_heapster_nodeselector={"env":"infra"}
 # Enable cluster logging
 
 openshift_logging_install_logging=True
-
-openshift_logging_storage_kind=nfs
-openshift_logging_storage_access_modes=['ReadWriteOnce']
-openshift_logging_storage_nfs_directory=/srv/nfs
-openshift_logging_storage_nfs_options='*(rw,root_squash)'
-openshift_logging_storage_volume_name=logging
-openshift_logging_storage_volume_size=10Gi
+openshift_logging_storage_kind=dynamic
 openshift_logging_storage_labels={'storage': 'logging'}
-
-# openshift_logging_kibana_hostname=kibana.apps.f967.example.opentlc.com
-openshift_logging_es_cluster_size=1
+openshift_logging_es_cluster_size=3
 
 
 openshift_logging_es_nodeselector={"env":"infra"}
@@ -162,21 +145,23 @@ openshift_additional_projects={'my-infra-project-test': {'default_node_selector'
 ###########################################################################
 
 openshift_hosted_router_selector='env=infra'
-openshift_hosted_router_replicas=2
+openshift_hosted_router_replicas=3
 #openshift_hosted_router_certificate={"certfile": "/path/to/router.crt", "keyfile": "/path/to/router.key", "cafile": "/path/to/router-ca.crt"}
 
 openshift_hosted_registry_selector='env=infra'
-openshift_hosted_registry_replicas=1
+openshift_hosted_registry_replicas=3
 
-openshift_hosted_registry_storage_kind=nfs
-openshift_hosted_registry_storage_access_modes=['ReadWriteMany']
-openshift_hosted_registry_storage_nfs_directory=/srv/nfs
-openshift_hosted_registry_storage_nfs_options='*(rw,root_squash)'
+openshift_hosted_registry_storage_kind=glusterfs
 openshift_hosted_registry_storage_volume_name=registry
-openshift_hosted_registry_storage_volume_size=20Gi
+openshift_hosted_registry_storage_volume_size=200Gi
 openshift_hosted_registry_pullthrough=true
 openshift_hosted_registry_acceptschema2=true
 openshift_hosted_registry_enforcequota=true
+
+
+# Glusterfs
+openshift_storage_glusterfs_namespace=glusterfs
+openshift_storage_glusterfs_name=storage
 
 
 ###########################################################################
@@ -187,12 +172,9 @@ openshift_enable_service_catalog=true
 template_service_broker_install=true
 openshift_template_service_broker_namespaces=['openshift']
 
-openshift_hosted_etcd_storage_kind=nfs
-openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
-openshift_hosted_etcd_storage_nfs_directory=/srv/nfs
+openshift_hosted_etcd_storage_kind=glusterfs
 openshift_hosted_etcd_storage_volume_name=etcd-vol2
-openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
-openshift_hosted_etcd_storage_volume_size=5G
+openshift_hosted_etcd_storage_volume_size=100G
 openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
 
 ###########################################################################
@@ -203,7 +185,8 @@ lb
 masters
 etcd
 nodes
-nfs
+glusterfs
+glusterfs_registry
 
 [lb]
 {% for lb in groups.lb %}
@@ -226,18 +209,25 @@ nfs
 {{ master }} openshift_hostname={{ master }} openshift_node_labels="{'logging':'true','openshift_schedulable':'False','cluster': '{{ coh_cluster_name }}', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
-{% for i_node in groups.infra %}
-## These are infranodes
-{{ i_node }} openshift_hostname={{ i_node }} openshift_node_labels="{'logging':'true','cluster': '{{ coh_cluster_name }}', 'env':'infra', 'zone': '{{ coh_zone }}'}"
-{% endfor %}
-
 {% for node in groups.nodes %}
 ## These are regular nodes
 {{ node }} openshift_hostname={{ node }} openshift_node_labels="{'logging':'true','cluster': '{{ coh_cluster_name }}', 'env':'app', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
-[nfs]
-{% for nfs_node in groups.nfs %}
-{{ nfs_node }} openshift_hostname={{ nfs_node }}
+{% for gf in groups.glusterfs %}
+{{ gf }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'storage', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
+{% for registry in groups.glusterfs_registry %}
+{{ registry }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'infra', 'zone': '{{ coh_zone }}', 'region': 'infra'}"
+{% endfor %}
+
+[glusterfs]
+{% for gfs in groups.glusterfs %}
+{{ gfs }} glusterfs_ip={{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vde" ]'
+{% endfor %}
+
+[glusterfs_registry]
+{% for registry in groups.glusterfs_registry %}
+{{ registry }} glusterfs_ip={{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vde" ]'
+{% endfor %}

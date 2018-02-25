@@ -1,5 +1,5 @@
 ---
-coh_destination_file: hosts-openshift-cluster
+coh_destination_file: openstack/hosts-openshift-cluster
 
 # Ansible related variables
 coh_cluster_name: tieto
