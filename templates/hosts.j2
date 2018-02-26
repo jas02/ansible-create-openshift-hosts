@@ -224,10 +224,10 @@ glusterfs_registry
 
 [glusterfs]
 {% for gfs in groups.glusterfs %}
-{{ gfs }} glusterfs_ip={{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vde" ]'
+{{ gfs }} glusterfs_ip={{ hostvars[gfs]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vdd" ]'
 {% endfor %}
 
 [glusterfs_registry]
 {% for registry in groups.glusterfs_registry %}
-{{ registry }} glusterfs_ip={{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vde" ]'
+{{ registry }} glusterfs_ip={{ hostvars[registry]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vdd" ]'
 {% endfor %}
