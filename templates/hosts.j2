@@ -233,7 +233,7 @@ nfs
 {{ node }} openshift_hostname={{ node }} openshift_node_labels="{'logging':'true','cluster': '{{ coh_cluster_name }}', 'env':'app', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
-{% for gf in groups.glusterfs %}
+{% for gfs in groups.glusterfs %}
 {{ hostvars[gfs].ansible_default_ipv4.address }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'storage', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
