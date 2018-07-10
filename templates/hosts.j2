@@ -198,6 +198,12 @@ openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
 openshift_hosted_etcd_storage_volume_size=50G
 openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
 
+
+# OpenShift Glusterfs
+openshift_hosted_registry_storage_kind=glusterfs
+openshift_hosted_registry_replicas=3
+openshift_hosted_registry_storage_volume_size=100Gi
+
 ###########################################################################
 ### OpenShift Hosts
 ###########################################################################
@@ -228,20 +234,20 @@ nfs
 [nodes]
 ## These are the masters
 {% for master in groups.masters %}
-{{ master }} openshift_hostname={{ master }} openshift_ip={{ hostvars[master].ansible_default_ipv4.address }} openshift_node_labels="{'logging':'true','openshift_schedulable':'False','cluster': '{{ coh_cluster_name }}', 'zone': '{{ coh_zone }}'}"
+{{ master }} openshift_hostname={{ master }} openshift_ip={{ hostvars[master]['ansible_default_ipv4']['address'] }} openshift_node_labels="{'logging':'true','openshift_schedulable':'False','cluster': '{{ coh_cluster_name }}', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
 {% for node in groups.nodes %}
 ## These are regular nodes
-{{ node }} openshift_hostname={{ node }} openshift_ip={{ hostvars[node].ansible_default_ipv4.address }} openshift_node_labels="{'logging':'true','cluster': '{{ coh_cluster_name }}', 'env':'app', 'zone': '{{ coh_zone }}'}"
+{{ node }} openshift_hostname={{ node }} openshift_ip={{ hostvars[node]['ansible_default_ipv4']['address'] }} openshift_node_labels="{'logging':'true','cluster': '{{ coh_cluster_name }}', 'env':'app', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
 {% for gfs in groups.glusterfs %}
-{{ gfs }} openshift_hostname={{ gfs }} openshift_ip={{ hostvars[gfs].ansible_default_ipv4.address }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'storage', 'zone': '{{ coh_zone }}'}"
+{{ gfs }} openshift_hostname={{ gfs }} openshift_ip={{ hostvars[gfs]['ansible_default_ipv4']['address'] }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'storage', 'zone': '{{ coh_zone }}'}"
 {% endfor %}
 
 {% for registry in groups.glusterfs_registry %}
-{{ registry }} openshift_hostname={{ registry }} openshift_ip={{ hostvars[registry].ansible_default_ipv4.address }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'infra', 'zone': '{{ coh_zone }}', 'region': 'infra'}"
+{{ registry }} openshift_hostname={{ registry }} openshift_ip={{ hostvars[registry]['ansible_default_ipv4']['address'] }} openshift_node_labels="{'logging':'true', 'cluster': '{{ coh_cluster_name }}', 'env':'infra', 'zone': '{{ coh_zone }}', 'region': 'infra'}"
 {% endfor %}
 
 [nfs]
@@ -251,10 +257,10 @@ nfs
 
 #[glusterfs]
 {% for gfs in groups.glusterfs %}
-#{{ gfs }} openshift_hostname={{ gfs }} openshift_ip={{ hostvars[gfs].ansible_default_ipv4.address }} glusterfs_ip={{ hostvars[gfs].ansible_default_ipv4.address }} glusterfs_devices='[ "/dev/vdd" ]'
+#{{ gfs }} openshift_hostname={{ gfs }} openshift_ip={{ hostvars[gfs]['ansible_default_ipv4']['address'] }} glusterfs_ip={{ hostvars[gfs]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vdd" ]'
 {% endfor %}
 
 #[glusterfs_registry]
 {% for registry in groups.glusterfs_registry %}
-#{{ registry }} openshift_hostname={{ registry }} openshift_ip={{ hostvars[registry].ansible_default_ipv4.address }} glusterfs_ip={{ hostvars[registry].ansible_default_ipv4.address }} glusterfs_devices='[ "/dev/vdd" ]'
+#{{ registry }} openshift_hostname={{ registry }} openshift_ip={{ hostvars[registry].ansible_default_ipv4.address }} glusterfs_ip={{ hostvars[registry]['ansible_default_ipv4']['address'] }} glusterfs_devices='[ "/dev/vdd" ]'
 {% endfor %}
