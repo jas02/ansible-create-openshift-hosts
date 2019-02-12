@@ -1,6 +1,6 @@
 galaxy_info:
   author: Lumir Jasiok
-  description: Support role to create OpenShift hosts file dynamically from facts gathered from infrastructore
+  description: Support role to create OpenShift inventory file dynamically from facts gathered from infrastructore
   company: Tieto Czech s.r.o.
 
   # If the issue tracker for your role is not on github, uncomment the
