@@ -205,11 +205,17 @@ openshift_logging_eventrouter_nodeselector={"node-role.kubernetes.io/infra": "tr
 ###########################################################################
 
 [OSEv3:children]
+lb
 masters
 etcd
 nodes
 glusterfs
 infra
+
+[lb]
+{% for host in groups['lb'] %}
+{{ hostvars[host]['ansible_hostname'] }}
+{% endfor %}
 
 [masters]
 {% for host in groups['masters'] %}
