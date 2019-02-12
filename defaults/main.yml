@@ -1,16 +1,17 @@
 ---
-coh_destination_file: openstack/hosts-openshift-cluster
+openshift_inventory_directory: /srv/inventory
+openshift_inventory_destination_file: "{{ openshift_inventory_directory }}/hosts"
 
 # Ansible related variables
-coh_cluster_name: tieto
-coh_zone: eu-swe2
-coh_ansible_ssh_user: "root"
+openshift_cluster_name: tieto
+openshift_zone: eu-swe2
+openshift_ansible_ssh_user: root
 
 # Openshift basic vars
 # deployment type origin/openshift-enterprise
-coh_deployment_type: "origin"
-coh_openshift_master_htpasswd_file: /root/htpasswd.openshift
-coh_openshift_master_default_subdomain: apps
+openshift_deployment_type: "openshift-enterprise"
+openshift_master_htpasswd_file: /root/htpasswd.openshift
+openshift_master_default_subdomain: apps
 
-coh_loadbalancer_hostname: "{{ groups.lb.0 }}"
-coh_domain_name: "openshift.int.tieto.com"
+openshift_loadbalancer_hostname: "{{ groups.lb.0 }}"
+openshift_domain_name: "openshift.int.tieto.com"

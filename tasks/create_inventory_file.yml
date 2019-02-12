@@ -1,0 +1,31 @@
+---
+- name: create inventory directory
+  file:
+    path: "{{ openshift_inventory_directory }}"
+    state: directory
+    owner: "{{ openshift_bastion_user }}"
+    group: "{{ openshift_bastion_user }}"
+
+- name: check if inventory file already exists
+  stat:
+    path: "{{ openshift_inventory_destination_file }}"
+  register: stat_result
+
+- name: create openshift inventory file
+  template:
+    src: hosts.j2
+    dest: "{{ openshift_inventory_destination_file }}"
+  when: stat_result.stat.exists == False
+
+- name: initialize git repository
+  command: "su - {{ openshift_bastion_user }} -c 'git init {{ openshift_inventory_directory }}'"
+  args:
+    creates: "{{ openshift_inventory_directory }}/.git"
+
+- name: check if there is already initial commit in the repository
+  command: "su - {{ openshift_bastion_user }} -c 'cd {{ openshift_inventory_directory }} && git log -n1'" 
+  register: git_commit
+
+- name: add inventory to the git and initial commit
+  command: "su - {{ openshift_bastion_user }} -c 'git add {{ openshift_inventory_destination_file }} && git commit -m 'initial commit''"
+  when: git_commit.stdout.find("your current branch 'master' does not have any commits yet") != -1
