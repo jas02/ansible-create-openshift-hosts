@@ -256,7 +256,7 @@ glusterfs_registry
 
 # only if we want glusterfs on infra nodes
 [glusterfs_registry]
-{% for host in groups['infra'] %}
+{% for host in groups['glusterfs_registry'] %}
 {{ hostvars[host]['ansible_hostname'] }} glusterfs_devices='["{{ glusterfs_devices }}"]'
 {% endfor %}
 
