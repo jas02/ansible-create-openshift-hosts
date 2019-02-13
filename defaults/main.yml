@@ -15,3 +15,5 @@ openshift_master_default_subdomain: apps
 
 openshift_loadbalancer_hostname: "{{ groups.lb.0 }}"
 openshift_domain_name: "openshift.int.tieto.com"
+
+openshift_heketi_admin_key: "DefauLtKeY"

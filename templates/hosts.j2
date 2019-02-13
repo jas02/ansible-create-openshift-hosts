@@ -19,6 +19,7 @@ openshift_image_tag={{ openshift_image_tag }}
 openshift_pkg_version={{ openshift_pkg_version }}
 openshift_release={{ openshift_release }}
 
+openshift_storage_glusterfs_heketi_admin_key="{{ openshift_heketi_admin_key }}"
 openshift_storage_glusterfs_namespace=glusterfs
 openshift_storage_glusterfs_name=storage
 openshift_storage_glusterfs_storageclass_default=true
@@ -89,9 +90,9 @@ openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 
 ### OpenShift Router and Registry Vars
 ###########################################################################
 
-openshift_hosted_router_replicas=2
+openshift_hosted_router_replicas=3
 
-openshift_hosted_registry_replicas=1
+openshift_hosted_registry_replicas=3
 
 openshift_hosted_registry_storage_kind=glusterfs
 openshift_hosted_registry_storage_volume_size=100Gi
@@ -210,7 +211,7 @@ masters
 etcd
 nodes
 glusterfs
-infra
+glusterfs_registry
 
 [lb]
 {% for host in groups['lb'] %}
@@ -244,18 +245,18 @@ infra
 {% endfor %}
 
 # Infra nodes
-{% for host in groups['infra'] %}
+{% for host in groups['glusterfs_registry'] %}
 {{ hostvars[host]['ansible_hostname'] }} openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
 {% endfor %}
 
 [glusterfs]
 {% for host in groups['glusterfs'] %}
-{{ hostvars[host]['ansible_hostname'] }} glusterfs_devices='{{ glusterfs_devices }}'
+{{ hostvars[host]['ansible_hostname'] }} glusterfs_devices='["{{ glusterfs_devices }}"]'
 {% endfor %}
 
 # only if we want glusterfs on infra nodes
-[glusterfs_infra]
+[glusterfs_registry]
 {% for host in groups['infra'] %}
-{{ hostvars[host]['ansible_hostname'] }} glusterfs_devices='{{ glusterfs_devices }}'
+{{ hostvars[host]['ansible_hostname'] }} glusterfs_devices='["{{ glusterfs_devices }}"]'
 {% endfor %}
 
