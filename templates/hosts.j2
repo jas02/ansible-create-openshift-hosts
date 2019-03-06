@@ -215,48 +215,48 @@ glusterfs_registry
 
 [lb]
 {% for host in groups['lb'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | hostvars[host].ansible_default_ipv4.address }}
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }}
 {% endfor %}
 
 [masters]
 {% for host in groups['masters'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }}
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }}
 {% endfor %}
 
 [etcd]
 {% for host in groups['masters'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }}
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }}
 {% endfor %}
 
 [nodes]
 ## These are the masters
 {% for host in groups['masters'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }} openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }} openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
 {% endfor %}
 
 ## These are regular nodes
 {% for host in groups['nodes'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }} openshift_node_group_name="node-config-compute" openshift_node_problem_detector_install=true
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }} openshift_node_group_name="node-config-compute" openshift_node_problem_detector_install=true
 {% endfor %}
 
 # GlusterFS nodes
 {% for host in groups['glusterfs'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }} openshift_node_group_name='node-config-compute' openshift_node_problem_detector_install=true
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }} openshift_node_group_name='node-config-compute' openshift_node_problem_detector_install=true
 {% endfor %}
 
 # Infra nodes
 {% for host in groups['glusterfs_registry'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }} openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }} openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
 {% endfor %}
 
 [glusterfs]
 {% for host in groups['glusterfs'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }} glusterfs_devices='["{{ glusterfs_devices }}"]'
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }} glusterfs_devices='["{{ glusterfs_devices }}"]'
 {% endfor %}
 
 # only if we want glusterfs on infra nodes
 [glusterfs_registry]
 {% for host in groups['glusterfs_registry'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }} glusterfs_devices='["{{ glusterfs_devices }}"]'
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | default(hostvars[host].ansible_default_ipv4.address) }} glusterfs_devices='["{{ glusterfs_devices }}"]'
 {% endfor %}
 
