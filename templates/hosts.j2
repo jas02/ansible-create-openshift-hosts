@@ -215,7 +215,7 @@ glusterfs_registry
 
 [lb]
 {% for host in groups['lb'] %}
-{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use }}
+{{ hostvars[host]['ansible_hostname'] }} openshift_hostname={{ host }} openshift_ip={{ hostvars[host].ip_address_to_use | hostvars[host].ansible_default_ipv4.address }}
 {% endfor %}
 
 [masters]
